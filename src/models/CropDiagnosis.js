@@ -6,8 +6,8 @@ const SuggestedAction = new mongoose.Schema({
 });
 
 const CropDiagnosisSchema = new mongoose.Schema({
-    cropImage: { type: mongoose.Schema.Types.ObjectId, ref: 'CropImage', required: true },
-    healthStatus: { type: String, required: true },
+    cropImage: { type: mongoose.Schema.Types.ObjectId, ref: 'CropImage', required: true, index: true },
+    healthStatus: { type: String, required: true, enum: ['healthy', 'diseased', 'unknown'] },
     predictedDiseases: [String],
     suggestedActions: [SuggestedAction],
 }, { timestamps: true });
