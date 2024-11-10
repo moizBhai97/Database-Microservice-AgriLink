@@ -8,8 +8,8 @@ const HealthMetricsSchema = new mongoose.Schema({
 });
 
 const CropHealthDataSchema = new mongoose.Schema({
-    farmer: { type: mongoose.Schema.Types.ObjectId, ref: 'FarmerProfile', required: true },
-    field: { type: mongoose.Schema.Types.ObjectId, ref: 'Field', required: true },
+    farmer: { type: mongoose.Schema.Types.ObjectId, ref: 'FarmerProfile', required: true, index: true },
+    field: { type: mongoose.Schema.Types.ObjectId, ref: 'Field', required: true, index: true },
     healthMetrics: { type: HealthMetricsSchema, required: true },
 }, { timestamps: true });
 
