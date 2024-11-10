@@ -10,7 +10,8 @@ const discussionForumRoutes = require('./discussionForumRoutes');
 const documentRoutes = require('./documentRoutes');
 const equipmentRoutes = require('./equipmentRoutes');
 const farmerProfileRoutes = require('./farmerProfileRoutes');
-
+const loanApplicationRoutes = require('./loanApplicationRoutes');
+const userRoutes = require('./userRoutes');
 const router = express.Router();
 
 router.use('/blogs', blogRoutes);
@@ -24,5 +25,7 @@ router.use('/forums', discussionForumRoutes);
 router.use('/documents', documentRoutes);
 router.use('/equipment', equipmentRoutes);
 router.use('/farmerProfiles', farmerProfileRoutes);
+router.use('/loanApplications', loanApplicationRoutes);
+router.use('/users', userRoutes);
 
 module.exports = router;
