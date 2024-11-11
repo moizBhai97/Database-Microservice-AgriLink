@@ -106,7 +106,10 @@ const userController = {
             if (!user) {
                 return next({ status: 404, message: 'User not found' });
             }
-            user.personalDetails.firstName = firstName || user.personalDetails.firstName;
+            console.log('body:', req.body);
+            console.log('User:', user);
+            
+            user.personalDetails.firstName = req.body.firstName || user.personalDetails.firstName;
             user.personalDetails.lastName = lastName || user.personalDetails.lastName;
             user.personalDetails.contactInfo = contactInfo || user.personalDetails.contactInfo;
             user.personalDetails.address = address || user.personalDetails.address;

@@ -15,4 +15,7 @@ router.route('/:id')
 router.route('/:id/preferences')
     .put(userController.updatePreferences);
 
+router.route('/:id/PersonalDetails')
+    .put(userController.updatePersonalDetails);
+
 module.exports = router;
