@@ -10,6 +10,14 @@ const discussionForumRoutes = require('./discussionForumRoutes');
 const documentRoutes = require('./documentRoutes');
 const equipmentRoutes = require('./equipmentRoutes');
 const farmerProfileRoutes = require('./farmerProfileRoutes');
+const ratingRoutes = require('./ratingRoutes');
+const feedbackRoutes = require('./feedbackRoutes');
+const subsidyRoutes = require('./subsidyRoutes');
+
+const loanApplicationRoutes = require('./loanApplicationRoutes');
+const userRoutes = require('./userRoutes');
+const supplierProfileRoutes = require('./supplierProfileRoutes');
+const productRoutes = require('./productRoutes');
 
 const router = express.Router();
 
@@ -24,5 +32,12 @@ router.use('/forums', discussionForumRoutes);
 router.use('/documents', documentRoutes);
 router.use('/equipment', equipmentRoutes);
 router.use('/farmerProfiles', farmerProfileRoutes);
+router.use('/ratings', ratingRoutes);
+router.use('/feedback', feedbackRoutes);
+router.use('/subsidies', subsidyRoutes);
+router.use('/loanApplications', loanApplicationRoutes);
+router.use('/users', userRoutes);
+router.use('/supplierProfiles', supplierProfileRoutes);
+router.use('/products', productRoutes);
 
 module.exports = router;

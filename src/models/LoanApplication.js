@@ -10,7 +10,7 @@ const LoanApplicationSchema = new mongoose.Schema({
         enum: ['pending', 'approved', 'rejected'],
         required: true,
     },
-    documents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Document' }],
+    documents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Document'}],
 }, { timestamps: true });
 
 module.exports = mongoose.model('LoanApplication', LoanApplicationSchema);
