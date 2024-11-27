@@ -1,7 +1,6 @@
 const User = require('../models/User');  // Assuming the model file is in the models directory
 
 const userController = {
-    // Get all users
     async getAllUsers(req, res, next) {
         try {
             const users = await User.find();
@@ -11,7 +10,7 @@ const userController = {
         }
     },
 
-    // Get user by ID
+  
     async getUserById(req, res, next) {
         try {
             const user = await User.findById(req.params.id);
@@ -24,7 +23,7 @@ const userController = {
         }
     },
 
-    // Create a new user
+ 
     async createUser(req, res, next) {
         try {
             const { userId, username, password, roles, status, personalDetails, preferences } = req.body;

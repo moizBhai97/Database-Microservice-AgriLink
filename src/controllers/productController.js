@@ -84,7 +84,7 @@ const productController = {
             if (!product) {
                 return next({ status: 404, message: 'Product not found' });
             }
-            res.json(product);
+            res.json("Product deleted successfully");
         } catch (error) {
             next({ status: 500, message: 'Internal Server Error', error });
         }

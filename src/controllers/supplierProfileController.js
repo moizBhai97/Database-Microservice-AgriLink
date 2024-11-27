@@ -67,7 +67,7 @@ const supplierProfileController = {
             if (!supplierProfile) {
                 return next({ status: 404, message: 'Supplier Profile not found' });
             }
-            res.json(supplierProfile);
+            res.json("Supplier Profile deleted successfully");
         } catch (error) {
             next({ status: 500, message: 'Internal Server Error', error });
         }
