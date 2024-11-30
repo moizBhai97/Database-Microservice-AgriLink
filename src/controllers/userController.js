@@ -1,4 +1,4 @@
-const User = require('../models/User');  // Assuming the model file is in the models directory
+const User = require('../models/User');  
 
 const userController = {
     async getAllUsers(req, res, next) {
