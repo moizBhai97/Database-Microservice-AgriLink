@@ -36,21 +36,17 @@ const subsidyApplicationController = {
     async createApplication(req, res, next) {
         try {
             const { farmer, subsidy, status, supportingDocuments } = req.body;
-            const userExists=await findOne({userId:farmer});
-            // Check if the farmer exists
-            const farmerExists = await FarmerProfile.find({user:userExists});
+            const farmerExists = await FarmerProfile.findById(farmer);
             if (!farmerExists) {
                 return next({ status: 404, message: 'Farmer profile not found' });
             }
-
-            // Check if the subsidy exists
             const subsidyExists = await Subsidy.findById(subsidy);
             if (!subsidyExists) {
                 return next({ status: 404, message: 'Subsidy not found' });
             }
 
             const newApplication = new SubsidyApplication({
-                farmerExists,
+                farmer,
                 subsidy,
                 status,
                 supportingDocuments,
