@@ -1,17 +1,12 @@
 const express = require('express');
 const loanApplicationController = require('../controllers/loanApplicationController');
-
 const router = express.Router();
 
-router.route('/')
-    .get(loanApplicationController.getAllLoanApplications)
-    .post(loanApplicationController.createLoanApplication);
-
-router.route('/:id')
-    .get(loanApplicationController.getLoanApplicationById)
-    .delete(loanApplicationController.deleteLoanApplication);
-
-router.route('/:id/status')
-    .put(loanApplicationController.updateLoanApplicationStatus);
+router.post('/', loanApplicationController.createLoanApplication);
+router.get('/', loanApplicationController.getAllLoanApplications);
+router.get('/:id', loanApplicationController.getLoanApplicationById);
+router.put('/:id', loanApplicationController.updateLoanApplication);
+router.delete('/:id', loanApplicationController.deleteLoanApplication);
+router.put('/:id', loanApplicationController.approveOrRejectLoan);
 
 module.exports = router;

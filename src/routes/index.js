@@ -14,6 +14,7 @@ const ratingRoutes = require('./ratingRoutes');
 const feedbackRoutes = require('./feedbackRoutes');
 const subsidyRoutes = require('./subsidyRoutes');
 const creditScoreRoutes = require('./creditScoreRoutes');
+const transactionRoutes = require('./transactionRoutes');
  
 //A
 const loanApplicationRoutes = require('./loanApplicationRoutes');
@@ -42,9 +43,10 @@ router.use('/farmerProfiles', farmerProfileRoutes);
 router.use('/ratings', ratingRoutes);
 router.use('/feedback', feedbackRoutes);
 router.use('/subsidies', subsidyRoutes);
-router.use('/creditScores', creditScoreRoutes);
+router.use('/creditscores', creditScoreRoutes);
+router.use('/transactions', transactionRoutes);
 //A
-router.use('/loanApplications', loanApplicationRoutes);
+router.use('/loan-applications', loanApplicationRoutes);
 router.use('/users', userRoutes);
 router.use('/supplierProfiles', supplierProfileRoutes);
 router.use('/products', productRoutes);
