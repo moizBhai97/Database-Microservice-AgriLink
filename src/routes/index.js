@@ -16,6 +16,7 @@ const subsidyRoutes = require('./subsidyRoutes');
 const creditScoreRoutes = require('./creditScoreRoutes');
 const transactionRoutes = require('./transactionRoutes');
 const loanRepaymentMonitoringRoutes = require('./loanRepaymentMonitoringRoutes');
+const escrowRoutes = require('./escrowRoutes');
  
 //A
 const loanApplicationRoutes = require('./loanApplicationRoutes');
@@ -47,6 +48,7 @@ router.use('/subsidies', subsidyRoutes);
 router.use('/creditscores', creditScoreRoutes);
 router.use('/transactions', transactionRoutes);
 router.use('/loan-repayments', loanRepaymentMonitoringRoutes);
+router.use('/es',escrowRoutes)
 
 //A
 router.use('/loan-applications', loanApplicationRoutes);
