@@ -21,7 +21,9 @@ const productRoutes = require('./productRoutes');
 const regulationRoutes = require('./regulationRoutes');
 const priceListRoutes = require('./priceListRoutes');
 const paymentRoutes = require('./paymentRoutes');
+const subsidyApplicationRoutes = require('./subsidyApplicationRoutes');
 //
+
 const router = express.Router();
 
 router.use('/blogs', blogRoutes);
@@ -46,5 +48,6 @@ router.use('/products', productRoutes);
 router.use('/regulations', regulationRoutes);
 router.use('/priceLists', priceListRoutes);
 router.use('/payments', paymentRoutes);
+router.use('/subsidyApplications', subsidyApplicationRoutes);
 //
 module.exports = router;
