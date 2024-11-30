@@ -1,5 +1,5 @@
 const Regulation = require('../models/Regulation');
-const Farmer = require('../models/Farmer');
+const Farmer = require('../models/FarmerProfile');
 
 const regulationController = {
     // Get all regulations

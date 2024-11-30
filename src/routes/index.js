@@ -19,6 +19,8 @@ const userRoutes = require('./userRoutes');
 const supplierProfileRoutes = require('./supplierProfileRoutes');
 const productRoutes = require('./productRoutes');
 const regulationRoutes = require('./regulationRoutes');
+const priceListRoutes = require('./priceListRoutes');
+const paymentRoutes = require('./paymentRoutes');
 //
 const router = express.Router();
 
@@ -42,5 +44,7 @@ router.use('/users', userRoutes);
 router.use('/supplierProfiles', supplierProfileRoutes);
 router.use('/products', productRoutes);
 router.use('/regulations', regulationRoutes);
+router.use('/priceLists', priceListRoutes);
+router.use('/payments', paymentRoutes);
 //
 module.exports = router;

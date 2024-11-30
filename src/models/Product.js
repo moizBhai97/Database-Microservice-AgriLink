@@ -16,7 +16,7 @@ const ProductSchema = new mongoose.Schema({
         required: true,
     },
     details: ProductDetailsSchema,
-    images: [{ type: String }], // URLs to images
+    images: [{ type: String }], //considering urls for now
     location: { type: String, required: true },
     availabilityStatus: {
         type: String,
