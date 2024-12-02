@@ -12,11 +12,4 @@ router.route('/:id')
     .put(cropDiagnosisController.updateDiagnosis)
     .delete(cropDiagnosisController.deleteDiagnosis);
 
-router.route('/:id/suggestedActions')
-    .post(cropDiagnosisController.addSuggestedAction);
-
-router.route('/:id/suggestedActions/:actionId')
-    .put(cropDiagnosisController.updateSuggestedAction)
-    .delete(cropDiagnosisController.deleteSuggestedAction);
-
 module.exports = router;
