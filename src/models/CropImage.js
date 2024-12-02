@@ -1,18 +1,19 @@
 const mongoose = require('mongoose');
 
 const LabelSchema = new mongoose.Schema({
-    label: { type: String, required: true },
-    labeledBy: { type: mongoose.Schema.Types.ObjectId, ref: 'FarmerProfile', required: true },
-    labeledAt: { type: Date, default: Date.now }
+    label: { type: String },
+    labeledBy: { type: mongoose.Schema.Types.ObjectId, ref: 'FarmerProfile', index: true },
+    labeledAt: { type: Date, default: Date.now },
+    isDropped: { type: Boolean, default: false },
+    upvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FarmerProfile' }],
+    downvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FarmerProfile' }],
 });
 
 const CropImageSchema = new mongoose.Schema({
     imageUrl: { type: String, required: true },
     uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'FarmerProfile', required: true, index: true },
-    status: { type: String, enum: ['unlabeled', 'labeled', 'validated', 'completed'], default: 'unlabeled' },
-    labels: [LabelSchema],
-    validatedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FarmerProfile' }],
-    validationCount: { type: Number, default: 0 },
+    status: { type: String, enum: ['unlabeled', 'labeled', 'validated'], default: 'unlabeled' },
+    labels: { type: [LabelSchema], default: [] },
     finalLabel: { type: String },
 }, { timestamps: true });
 

@@ -15,7 +15,13 @@ router.route('/:id')
 router.route('/:id/label')
     .post(cropImageController.addLabel);
 
-router.route('/:id/validate')
-    .post(cropImageController.validateLabel);
+router.route('/:id/label/upvote')
+    .post(cropImageController.upvoteLabel);
+
+router.route('/:id/label/downvote')
+    .post(cropImageController.downvoteLabel);
+
+router.route('/:id/label/drop')
+    .post(cropImageController.dropLabel);
 
 module.exports = router;
