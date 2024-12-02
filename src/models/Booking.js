@@ -7,6 +7,7 @@ const BookingSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Equipment',
       required: true,
+      index: true,
     },
     renter: {
       type: Schema.Types.ObjectId,

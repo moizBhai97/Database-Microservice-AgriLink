@@ -4,7 +4,6 @@ const blogRoutes = require('./blogRoutes');
 const bookingRoutes = require('./bookingRoutes');
 const chatRoutes = require('./chatRoutes');
 const cropDiagnosisRoutes = require('./cropDiagnosisRoutes');
-const cropHealthDataRoutes = require('./cropHealthDataRoutes');
 const cropImageRoutes = require('./cropImageRoutes');
 const logisticsRequestRoutes = require('./logisticsRequestRoutes');
 const discussionForumRoutes = require('./discussionForumRoutes');
@@ -29,6 +28,7 @@ const priceListRoutes = require('./priceListRoutes');
 const paymentRoutes = require('./paymentRoutes');
 const subsidyApplicationRoutes = require('./subsidyApplicationRoutes');
 const usageRecordRoutes = require('./usageRecordRoutes');
+const governmentOfficialRoutes = require('./governmentOfficialRoutes');
 
 const router = express.Router();
 
@@ -36,7 +36,6 @@ router.use('/blogs', blogRoutes);
 router.use('/bookings', bookingRoutes);
 router.use('/chats', chatRoutes);
 router.use('/cropDiagnoses', cropDiagnosisRoutes);
-router.use('/cropHealthData', cropHealthDataRoutes);
 router.use('/cropImages', cropImageRoutes);
 router.use('/logisticsRequests', logisticsRequestRoutes);
 router.use('/forums', discussionForumRoutes);
@@ -61,5 +60,6 @@ router.use('/priceLists', priceListRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/subsidyApplications', subsidyApplicationRoutes);
 router.use('/usageRecords', usageRecordRoutes);
+router.use('/governmentOfficials', governmentOfficialRoutes);
 
 module.exports = router;

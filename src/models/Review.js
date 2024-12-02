@@ -2,10 +2,15 @@ const mongoose = require('mongoose');
 
 const ReviewSchema = new mongoose.Schema(
     {
-        equipment: {
+        reviewType: {
+            type: String,
+            required: true,
+            enum: ['Equipment', 'Product']
+        },
+        reviewFor: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Equipment',
-            required: true
+            required: true,
+            refPath: 'reviewType'
         },
         user: {
             type: mongoose.Schema.Types.ObjectId,
@@ -16,9 +21,12 @@ const ReviewSchema = new mongoose.Schema(
         rating: {
             type: Number,
             required: true,
-            min: 1, max: 5
+            min: 1,
+            max: 5
         },
         comment: { type: String },
-    }, { timestamps: true });
+    },
+    { timestamps: true }
+);
 
 module.exports = mongoose.model('Review', ReviewSchema);
