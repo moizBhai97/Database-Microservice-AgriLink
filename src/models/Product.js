@@ -16,7 +16,7 @@ const ProductSchema = new mongoose.Schema({
         required: true,
     },
     details: ProductDetailsSchema,
-    images: [{ type: String }], // URLs to images
+    images: [{ type: String }], //considering urls for now
     location: { type: String, required: true },
     availabilityStatus: {
         type: String,
@@ -26,4 +26,4 @@ const ProductSchema = new mongoose.Schema({
     supplier: { type: mongoose.Schema.Types.ObjectId, ref: 'SupplierProfile', required: true },
 }, { timestamps: true });
 
-module.exports = mongoose.model('ProductCatalog', ProductCatalogSchema);
+module.exports = mongoose.model('ProductCatalog', ProductSchema);

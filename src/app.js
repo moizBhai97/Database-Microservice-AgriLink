@@ -20,7 +20,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(authMiddleware);
+//app.use(authMiddleware);
 
 app.use('/', routes);
 

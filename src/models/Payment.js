@@ -1,18 +1,28 @@
 const mongoose = require('mongoose');
-
-const transactionSchema = new mongoose.Schema({
-    from: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    to: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    currency: { type: String, required: true },
-}, { timestamps: true });
+const { v4: uuidv4 } = require('uuid');
 
 const paymentSchema = new mongoose.Schema({
-    order: { type: mongoose.Schema.Types.ObjectId, ref: 'Order'},
-    booking: { type: mongoose.Schema.Types.ObjectId, ref: 'Booking' },
+    paymentId: { type: String, default: uuidv4 },
+    transactionId: { type: String, required: true },
     amount: { type: Number, required: true },
+    paymentDate: { type: Date, required: true },
     paymentMethod: { type: String },
-    paymentStatus: { type: String, enum: ["pending", "completed", "failed"], required: true },
-    transaction: { type: transactionSchema, required: true },
-}, { timestamps: true });
+    paymentStatus: { type: String, enum: ['pending', 'completed', 'failed'], required: true },
+    escrow: { 
+        type: Boolean, 
+        default: true // Indicates the payment is held in escrow
+    },
+    escrowStatus: {
+        type: String,
+        enum: ['Pending', 'Released', 'Cancelled'], 
+        default: 'Pending' // Tracks escrow state
+    },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },  // Track changes
+    escrowReleaseConditions: { // Conditions required to release the funds
+        allPartiesConfirmed: { type: Boolean, default: false },
+        transactionVerified: { type: Boolean, default: false }
+    }
+});
 
 module.exports = mongoose.model('Payment', paymentSchema);

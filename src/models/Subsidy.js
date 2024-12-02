@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const SubsidySchema = new mongoose.Schema({
-    title: { type: String, required: true },
+    title: { type: String, required: true }, //shouldnt sub title be unique?
     category: { type: String, required: true },
     region: { type: String, required: true },
     description: { type: String, required: true },
