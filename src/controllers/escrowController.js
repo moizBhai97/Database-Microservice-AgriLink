@@ -7,7 +7,6 @@ exports.createEscrow = async (req, res) => {
     // const { fromUserId, toUserId, amount, paymentType } = req.body;
     const { fromUserId, toUserId, amount } = req.body;
 
-
     const payment = new Payment({
       fromUserId,
       toUserId,

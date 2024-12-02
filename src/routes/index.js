@@ -1,4 +1,5 @@
 const express = require('express');
+
 const blogRoutes = require('./blogRoutes');
 const bookingRoutes = require('./bookingRoutes');
 const chatRoutes = require('./chatRoutes');
@@ -18,9 +19,7 @@ const transactionRoutes = require('./transactionRoutes');
 const loanRepaymentMonitoringRoutes = require('./loanRepaymentMonitoringRoutes');
 const escrowRoutes = require('./escrowRoutes');
 const reviewRoutes = require('./reviewRoutes');
-
-
-//A
+const notificationRoutes = require('./notificationRoutes');
 const loanApplicationRoutes = require('./loanApplicationRoutes');
 const userRoutes = require('./userRoutes');
 const supplierProfileRoutes = require('./supplierProfileRoutes');
@@ -29,7 +28,7 @@ const regulationRoutes = require('./regulationRoutes');
 const priceListRoutes = require('./priceListRoutes');
 const paymentRoutes = require('./paymentRoutes');
 const subsidyApplicationRoutes = require('./subsidyApplicationRoutes');
-//
+const usageRecordRoutes = require('./usageRecordRoutes');
 
 const router = express.Router();
 
@@ -52,8 +51,7 @@ router.use('/transactions', transactionRoutes);
 router.use('/loan-repayments', loanRepaymentMonitoringRoutes);
 router.use('/es', escrowRoutes)
 router.use('/reviews', reviewRoutes);
-
-//A
+router.use('/notifications', notificationRoutes);
 router.use('/loan-applications', loanApplicationRoutes);
 router.use('/users', userRoutes);
 router.use('/supplierProfiles', supplierProfileRoutes);
@@ -62,5 +60,6 @@ router.use('/regulations', regulationRoutes);
 router.use('/priceLists', priceListRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/subsidyApplications', subsidyApplicationRoutes);
-//
+router.use('/usageRecords', usageRecordRoutes);
+
 module.exports = router;

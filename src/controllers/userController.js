@@ -7,14 +7,13 @@ const userController = {
     // Signup functionality
     async signup(req, res, next) {
         try {
-            const { userId, username, password, roles, personalDetails } = req.body;
+            const { username, password, roles, personalDetails } = req.body;
             const existingUser = await User.findOne({ username });
             if (existingUser) {
                 return res.status(400).json({ message: 'Username already exists' });
             }
             const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = new User({
-                userId,
                 username,
                 password: hashedPassword,
                 roles,
@@ -22,7 +21,7 @@ const userController = {
             });
 
             await newUser.save();
-            res.status(201).json({ message: 'User created successfully', userId: newUser.userId });
+            res.status(201).json({ message: 'User created successfully', userId: newUser._id });
         } catch (error) {
             next({ status: 500, message: 'Internal Server Error', error });
         }
@@ -31,9 +30,9 @@ const userController = {
     // Login functionality
     async login(req, res, next) {
         try {
-            const { userId, username, password } = req.body;
+            const { username, password } = req.body;
 
-            const user = await User.findOne({ userId });
+            const user = await User.findOne({ username });
             if (!user) {
                 return res.status(404).json({ message: 'User not found' });
             }
@@ -44,7 +43,6 @@ const userController = {
 
             const token = jwt.sign(
                 {
-                    userId: user._id,
                     username: user.username,
                     roles: user.roles,
                 },
@@ -82,9 +80,8 @@ const userController = {
 
     async createUser(req, res, next) {
         try {
-            const { userId, username, password, roles, status, personalDetails, preferences } = req.body;
+            const { username, password, roles, status, personalDetails, preferences } = req.body;
             const user = new User({
-                userId,
                 username,
                 password,
                 roles,
@@ -161,8 +158,6 @@ const userController = {
             if (!user) {
                 return next({ status: 404, message: 'User not found' });
             }
-            console.log('body:', req.body);
-            console.log('User:', user);
 
             user.personalDetails.firstName = req.body.firstName || user.personalDetails.firstName;
             user.personalDetails.lastName = lastName || user.personalDetails.lastName;
@@ -173,7 +168,6 @@ const userController = {
             await user.save();
             res.status(200).json({ message: 'Personal details updated successfully', user });
         } catch (error) {
-            console.error(error);
             next({ status: 500, message: 'Internal Server Error', error });
         }
     },
