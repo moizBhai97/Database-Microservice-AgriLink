@@ -58,6 +58,27 @@ const farmerProfileController = {
         }
     },
 
+    async updateContributionStats(req, res, next) {
+        try {
+            const { numContributed, numLabeled, numValidated } = req.body;
+            const profile = await FarmerProfile.findById(req.params.id);
+            if (!profile) {
+                return next({ status: 404, message: 'Profile not found' });
+            }
+            if (numContributed !== undefined) profile.contributionStats.numContributed = numContributed;
+            if (numLabeled !== undefined) profile.contributionStats.numLabeled = numLabeled;
+            if (numValidated !== undefined) profile.contributionStats.numValidated = numValidated;
+            await profile.save();
+            res.json(profile);
+        } catch (error) {
+            if (error.name === 'ValidationError') {
+                next({ status: 400, message: 'Validation Error', error });
+            } else {
+                next({ status: 500, message: 'Internal Server Error', error });
+            }
+        }
+    },
+
     async deleteProfile(req, res, next) {
         try {
             const profile = await FarmerProfile.findByIdAndDelete(req.params.id);

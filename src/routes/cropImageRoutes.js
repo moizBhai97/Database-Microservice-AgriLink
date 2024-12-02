@@ -12,4 +12,10 @@ router.route('/:id')
     .put(cropImageController.updateImage)
     .delete(cropImageController.deleteImage);
 
+router.route('/:id/label')
+    .post(cropImageController.addLabel);
+
+router.route('/:id/validate')
+    .post(cropImageController.validateLabel);
+
 module.exports = router;
