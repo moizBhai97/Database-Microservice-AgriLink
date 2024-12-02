@@ -1,42 +1,42 @@
 const mongoose = require('mongoose');
 
 const CreditScoreSchema = new mongoose.Schema({
-    userId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User', 
-        required: true 
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
-    score: { 
-        type: Number, 
-        default: 500, 
-        min: 300,     
-        max: 900      
+    score: {
+        type: Number,
+        default: 500,
+        min: 300,
+        max: 900
     },
     history: [
         {
-            type: { 
-                type: String, 
-                enum: ['Loan', 'Repayment'], 
-                required: true 
+            type: {
+                type: String,
+                enum: ['Loan', 'Repayment'],
+                required: true
             },
-            amount: { 
-                type: Number, 
-                required: true 
+            amount: {
+                type: Number,
+                required: true
             },
-            date: { 
-                type: Date, 
-                default: Date.now 
+            date: {
+                type: Date,
+                default: Date.now
             },
-            status: { 
-                type: String, 
-                enum: ['On-time', 'Late', 'Missed'], 
-                required: true 
+            status: {
+                type: String,
+                enum: ['On-time', 'Late', 'Missed'],
+                required: true
             }
         }
     ],
-    updatedAt: { 
-        type: Date, 
-        default: Date.now 
+    updatedAt: {
+        type: Date,
+        default: Date.now
     }
 });
 

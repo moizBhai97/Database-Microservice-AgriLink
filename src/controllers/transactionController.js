@@ -1,5 +1,5 @@
 const Transaction = require('../models/Transaction');
-const Payment = require('../models/Payment'); 
+const Payment = require('../models/Payment');
 
 const transactionController = {
     // Create a transaction and a corresponding payment

@@ -6,14 +6,14 @@ exports.createEscrow = async (req, res) => {
   try {
     // const { fromUserId, toUserId, amount, paymentType } = req.body;
     const { fromUserId, toUserId, amount } = req.body;
-    
+
 
     const payment = new Payment({
       fromUserId,
       toUserId,
       amount,
-    //   paymentType,
-    paymentStatus: 'pending',  // Default status as 'pending'
+      //   paymentType,
+      paymentStatus: 'pending',  // Default status as 'pending'
       paymentDate: new Date(),   // Set the current date and time
       transactionId: uuidv4(),
       escrow: true,
@@ -57,36 +57,36 @@ exports.verifyEscrowConditions = async (req, res) => {
 
 // Release escrow funds
 exports.releaseEscrowFunds = async (req, res) => {
-    try {
-      const { transactionId } = req.params;
-      const payment = await Payment.findOne({ transactionId });
-  
-      if (!payment) {
-        return res.status(404).json({ error: 'Transaction not found' });
-      }
-  
-      if (payment.escrowStatus === 'Released') {
-        return res.status(400).json({ error: 'Funds already released' });
-      }
-  
-      if (
-        payment.escrowReleaseConditions.allPartiesConfirmed &&
-        payment.escrowReleaseConditions.transactionVerified
-      ) {
-        payment.escrow = false; // Funds no longer in escrow
-        payment.escrowStatus = 'Released';
-  
-        await payment.save();
-        res.status(200).json({ message: 'Funds released successfully', payment });
-      } else {
-        res.status(400).json({ error: 'Escrow conditions not met' });
-      }
-    } catch (error) {
-      res.status(500).json({ error: 'Error releasing funds' });
-    }
-  };
+  try {
+    const { transactionId } = req.params;
+    const payment = await Payment.findOne({ transactionId });
 
-  // Route to fetch escrow details
+    if (!payment) {
+      return res.status(404).json({ error: 'Transaction not found' });
+    }
+
+    if (payment.escrowStatus === 'Released') {
+      return res.status(400).json({ error: 'Funds already released' });
+    }
+
+    if (
+      payment.escrowReleaseConditions.allPartiesConfirmed &&
+      payment.escrowReleaseConditions.transactionVerified
+    ) {
+      payment.escrow = false; // Funds no longer in escrow
+      payment.escrowStatus = 'Released';
+
+      await payment.save();
+      res.status(200).json({ message: 'Funds released successfully', payment });
+    } else {
+      res.status(400).json({ error: 'Escrow conditions not met' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error releasing funds' });
+  }
+};
+
+// Route to fetch escrow details
 exports.getEscrowDetails = async (req, res) => {
   try {
     const { transactionId } = req.params;  // Get transaction ID from params

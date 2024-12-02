@@ -34,9 +34,9 @@ const regulationController = {
                 description,
                 effectiveDate,
                 category,
-                type, 
+                type,
             });
-            
+
             await regulation.save();
             res.status(201).json(regulation);
         } catch (error) {
@@ -96,7 +96,7 @@ const regulationController = {
             //     return next({ status: 404, message: 'Farmer not found' });
             // }
             // const farmerId = farmer._id;
-             const { farmerId } = req.body; //assuming id is stored in the authorization token
+            const { farmerId } = req.body; //assuming id is stored in the authorization token
             if (!regulation.bookmarkedBy.includes(farmerId)) {
                 regulation.bookmarkedBy.push(farmerId);
                 await regulation.save();

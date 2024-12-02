@@ -8,13 +8,13 @@ const paymentSchema = new mongoose.Schema({
     paymentDate: { type: Date, required: true },
     paymentMethod: { type: String },
     paymentStatus: { type: String, enum: ['pending', 'completed', 'failed'], required: true },
-    escrow: { 
-        type: Boolean, 
+    escrow: {
+        type: Boolean,
         default: true // Indicates the payment is held in escrow
     },
     escrowStatus: {
         type: String,
-        enum: ['Pending', 'Released', 'Cancelled'], 
+        enum: ['Pending', 'Released', 'Cancelled'],
         default: 'Pending' // Tracks escrow state
     },
     createdAt: { type: Date, default: Date.now },

@@ -1,5 +1,5 @@
 const Booking = require('../models/Booking');
-const Equipment = require('../models/Equipment');  
+const Equipment = require('../models/Equipment');
 
 const bookingController = {
     // Get all bookings with filters

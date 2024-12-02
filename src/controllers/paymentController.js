@@ -60,19 +60,19 @@ exports.deletePayment = async (req, res) => {
 // Process a repayment
 exports.processRepayment = async (req, res) => {
     try {
-      const { repaymentId, status, amount } = req.body;
-  
-      const repayment = await LoanRepaymentMonitoring.findById(repaymentId);
-      if (!repayment) return res.status(404).json({ message: 'Repayment not found.' });
-  
-      repayment.status = status;
-      await repayment.save();
-  
-      await updateCreditScoreOnRepayment(repayment.userId, status, amount);
-  
-      res.json({ message: 'Repayment processed and credit score updated.' });
+        const { repaymentId, status, amount } = req.body;
+
+        const repayment = await LoanRepaymentMonitoring.findById(repaymentId);
+        if (!repayment) return res.status(404).json({ message: 'Repayment not found.' });
+
+        repayment.status = status;
+        await repayment.save();
+
+        await updateCreditScoreOnRepayment(repayment.userId, status, amount);
+
+        res.json({ message: 'Repayment processed and credit score updated.' });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -89,19 +89,19 @@ exports.makePayment = async (req, res) => {
             amount,
             currency: 'pkr',
             payment_method: paymentMethodId,
-            confirmation_method: 'automatic',  
+            confirmation_method: 'automatic',
             confirm: true,
         });
 
         const paymentStatus = paymentIntent.status === 'succeeded' ? 'completed' :
-                              paymentIntent.status === 'pending' ? 'pending' : 'failed';
-                              
+            paymentIntent.status === 'pending' ? 'pending' : 'failed';
+
         // record the payment to database 
         const payment = new Payment({
             transactionId: paymentIntent.id,
             amount: paymentIntent.amount_received / 100,
             paymentMethod: paymentIntent.payment_method,
-            paymentStatus: paymentStatus, 
+            paymentStatus: paymentStatus,
             paymentDate: new Date(),
         });
         // save payment
@@ -112,7 +112,7 @@ exports.makePayment = async (req, res) => {
             payment,
             message: 'Payment successful',
         });
-    } catch(error) {
+    } catch (error) {
         console.error('Error during payment:', error);
         return res.status(500).json({
             status: 'error',
