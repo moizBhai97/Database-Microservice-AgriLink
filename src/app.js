@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const authMiddleware = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
+const health = require('./middlewares/health');
 const routes = require('./routes');
 
 const app = express();
@@ -16,7 +17,7 @@ app.use(morgan('combined'));
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
-    // console.log(req.url);
+    console.log(req.url);
     next();
 });
 

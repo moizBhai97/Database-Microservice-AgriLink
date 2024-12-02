@@ -32,6 +32,12 @@ const governmentOfficialRoutes = require('./governmentOfficialRoutes');
 
 const router = express.Router();
 
+router.get('/', (req, res) => {
+    res.json({
+        message: 'Welcome to the Farmally API',
+    });
+});
+
 router.use('/blogs', blogRoutes);
 router.use('/bookings', bookingRoutes);
 router.use('/chats', chatRoutes);
@@ -61,5 +67,11 @@ router.use('/payments', paymentRoutes);
 router.use('/subsidyApplications', subsidyApplicationRoutes);
 router.use('/usageRecords', usageRecordRoutes);
 router.use('/governmentOfficials', governmentOfficialRoutes);
+
+router.use((req, res, next) => {
+    const error = new Error('Not Found');
+    error.status = 404;
+    next(error);
+});
 
 module.exports = router;
