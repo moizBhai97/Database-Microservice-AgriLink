@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { dbUrl } = require('./src/config');
 const { Permission, Role } = require('./src/models/User'); // Adjust the path as necessary
 
 const permissions = [
@@ -18,7 +19,7 @@ const roles = [
 async function seedDatabase() {
     try {
         // Connect to MongoDB
-        await mongoose.connect('mongodb+srv://i211209:Xg5lmHfaQt0GN7tW@agrilink.8s85i.mongodb.net/Agrilink', {
+        await mongoose.connect(dbUrl, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
