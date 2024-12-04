@@ -3,18 +3,28 @@ const FarmerProfile = require('../models/FarmerProfile');
 const Subsidy = require('../models/Subsidy');
 
 const subsidyApplicationController = {
-    // Get all subsidy applications
-    async getAllApplications(req, res, next) {
-        try {
+
+        // Get all subsidy applications
+        async getAllApplications(req, res, next) {
+          try {
             const applications = await SubsidyApplication.find()
-                .populate('farmer', 'farmDetails creditScore bankDetails')
-                .populate('subsidy', 'name description eligibilityCriteria')
-                .populate('supportingDocuments', 'url type');
-            res.json(applications);
-        } catch (error) {
-            next({ status: 500, message: 'Internal Server Error', error });
-        }
-    },
+              .populate("farmer", "farmDetails creditScore bankDetails")
+              .populate("subsidy", "title category region amount description")
+              .populate("supportingDocuments", "fileUrl fileType metadata")
+      
+              .populate({
+                path: "farmer",
+                populate: {
+                  path: "user",
+                  select: "username", // Only include username
+                },
+              });
+              console.log ('www')
+              res.json (applications)
+          } catch (error) {
+            next({ status: 500, message: "Internal Server Error", error });
+          }
+        },
 
     // Get a specific application by ID
     async getApplicationById(req, res, next) {
