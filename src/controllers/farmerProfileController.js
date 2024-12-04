@@ -24,8 +24,8 @@ const farmerProfileController = {
 
     async createProfile(req, res, next) {
         try {
-            const { user, farmDetails, creditScore, bankDetails } = req.body;
-            const profile = new FarmerProfile({ user, farmDetails, creditScore, bankDetails });
+            const { user, farmDetails, creditScore, bankDetails, thresholds } = req.body;
+            const profile = new FarmerProfile({ user, farmDetails, creditScore, bankDetails, thresholds });
             await profile.save();
             res.status(201).json(profile);
         } catch (error) {
@@ -39,10 +39,10 @@ const farmerProfileController = {
 
     async updateProfile(req, res, next) {
         try {
-            const { user, farmDetails, creditScore, bankDetails } = req.body;
+            const { user, farmDetails, creditScore, bankDetails, thresholds } = req.body;
             const profile = await FarmerProfile.findByIdAndUpdate(
                 req.params.id,
-                { user, farmDetails, creditScore, bankDetails },
+                { user, farmDetails, creditScore, bankDetails, thresholds },
                 { new: true, runValidators: true }
             );
             if (!profile) {
@@ -68,6 +68,25 @@ const farmerProfileController = {
             if (numContributed !== undefined) profile.contributionStats.numContributed = numContributed;
             if (numLabeled !== undefined) profile.contributionStats.numLabeled = numLabeled;
             if (numValidated !== undefined) profile.contributionStats.numValidated = numValidated;
+            await profile.save();
+            res.json(profile);
+        } catch (error) {
+            if (error.name === 'ValidationError') {
+                next({ status: 400, message: 'Validation Error', error });
+            } else {
+                next({ status: 500, message: 'Internal Server Error', error });
+            }
+        }
+    },
+
+    async updateThresholds(req, res, next) {
+        try {
+            const { thresholds } = req.body;
+            const profile = await FarmerProfile.findById(req.params.id);
+            if (!profile) {
+                return next({ status: 404, message: 'Profile not found' });
+            }
+            profile.thresholds = thresholds;
             await profile.save();
             res.json(profile);
         } catch (error) {

@@ -15,4 +15,7 @@ router.route('/:id')
 router.route('/:id/contribution')
     .put(farmerProfileController.updateContributionStats);
 
+router.route('/:id/thresholds')
+    .put(farmerProfileController.updateThresholds);
+
 module.exports = router;
