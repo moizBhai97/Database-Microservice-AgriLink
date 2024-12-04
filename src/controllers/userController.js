@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const { User, Role } = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -58,17 +58,16 @@ const userController = {
 
     async getAllUsers(req, res, next) {
         try {
-            const users = await User.find();
+            const users = await User.find().populate('role');
             res.json(users);
         } catch (error) {
             next({ status: 500, message: 'Internal Server Error', error });
         }
     },
 
-
     async getUserById(req, res, next) {
         try {
-            const user = await User.findById(req.params.id);
+            const user = await User.findById(req.params.id).populate('role');
             if (!user) {
                 return next({ status: 404, message: 'User not found' });
             }
@@ -78,20 +77,28 @@ const userController = {
         }
     },
 
-
     async createUser(req, res, next) {
         try {
-            const { username, password, roles, status, personalDetails, preferences } = req.body;
-            const user = new User({
+            const { username, password, role, status, personalDetails, preferences } = req.body;
+            const existingUser = await User.findOne({ username });
+            if (existingUser) {
+                return res.status(400).json({ message: 'Username already exists' });
+            }
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const userRole = await Role.findById(role);
+            if (!userRole) {
+                return res.status(400).json({ message: 'Invalid role' });
+            }
+            const newUser = new User({
                 username,
-                password,
-                roles,
+                password: hashedPassword,
+                role,
                 status,
                 personalDetails,
                 preferences,
             });
-            await user.save();
-            res.status(201).json(user);
+            await newUser.save();
+            res.status(201).json({ message: 'User created successfully', userId: newUser._id });
         } catch (error) {
             if (error.name === 'ValidationError') {
                 next({ status: 400, message: 'Validation Error', error });
@@ -104,11 +111,20 @@ const userController = {
     async updateUser(req, res, next) {
         try {
             const updates = req.body;
+            if (updates.password) {
+                updates.password = await bcrypt.hash(updates.password, 10);
+            }
+            if (updates.role) {
+                const userRole = await Role.findById(updates.role);
+                if (!userRole) {
+                    return res.status(400).json({ message: 'Invalid role' });
+                }
+            }
             const user = await User.findByIdAndUpdate(
                 req.params.id,
                 updates,
                 { new: true, runValidators: true }
-            );
+            ).populate('role');
             if (!user) {
                 return next({ status: 404, message: 'User not found' });
             }
@@ -122,7 +138,6 @@ const userController = {
         }
     },
 
-    // Delete user
     async deleteUser(req, res, next) {
         try {
             const user = await User.findByIdAndDelete(req.params.id);
@@ -135,7 +150,6 @@ const userController = {
         }
     },
 
-    // Update user preferences
     async updatePreferences(req, res, next) {
         try {
             const { notifications } = req.body;
@@ -161,7 +175,7 @@ const userController = {
                 return next({ status: 404, message: 'User not found' });
             }
 
-            user.personalDetails.firstName = req.body.firstName || user.personalDetails.firstName;
+            user.personalDetails.firstName = firstName || user.personalDetails.firstName;
             user.personalDetails.lastName = lastName || user.personalDetails.lastName;
             user.personalDetails.contactInfo = contactInfo || user.personalDetails.contactInfo;
             user.personalDetails.address = address || user.personalDetails.address;
