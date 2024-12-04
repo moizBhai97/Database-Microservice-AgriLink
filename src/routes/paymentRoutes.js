@@ -1,17 +1,13 @@
 const express = require('express');
 const paymentController = require('../controllers/paymentController');
-
 const router = express.Router();
 
-// Get all payments and create a new payment
-router.route('/')
-    .get(paymentController.getAllPayments)
-    .post(paymentController.createPayment);
-
-// Get, update, or delete a specific payment
-router.route('/:id')
-    .get(paymentController.getPaymentById)
-    .put(paymentController.updatePayment)
-    .delete(paymentController.deletePayment);
+router.post('/', paymentController.createPayment); // Create a new payment
+router.get('/', paymentController.getAllPayments); // Get all payments
+router.get('/:id', paymentController.getPaymentById); // Get a payment by ID
+router.put('/:id', paymentController.updatePayment); // Update a payment by ID
+router.delete('/:id', paymentController.deletePayment); // Delete a payment by ID
+router.post('/repay', paymentController.processRepayment); // Process a loan repayment
+router.post('/make-payment', paymentController.makePayment); // Make a payment via Stripe
 
 module.exports = router;

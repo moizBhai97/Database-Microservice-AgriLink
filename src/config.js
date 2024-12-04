@@ -1,7 +1,10 @@
+const stripe = require('./utils/stripe');
+
 require('dotenv').config();
 
 module.exports = {
     port: process.env.PORT,
-    dbUrl: "mongodb+srv://i211209:Xg5lmHfaQt0GN7tW@agrilink.8s85i.mongodb.net/Agrilink",
+    dbUrl: process.env.DB_URL,
     jwtSecret: process.env.JWT_SECRET,
+    stripeKey: process.env.STRIPE_SECRET_KEY,
 };

@@ -1,79 +1,88 @@
 const LoanApplication = require('../models/LoanApplication');
+const CreditScore = require('../models/CreditScore');
 
-const loanApplicationController = {
-    async createLoanApplication(req, res, next) {
-        try {
-            const { applicant, amountRequested, purpose, interestRate, documents } = req.body;
-            const loanApplication = new LoanApplication({
-                applicant,
-                amountRequested,
-                purpose,
-                interestRate,
-                status: 'pending',
-                documents,
-            });
-            await loanApplication.save();
-            res.status(201).json(loanApplication);
-        } catch (error) {
-            if (error.name === 'ValidationError') {
-                next({ status: 400, message: 'Validation Error', error });
-            } else {
-                next({ status: 500, message: 'Internal Server Error', error });
-            }
-        }
-    },
-
-    async getAllLoanApplications(req, res, next) {
-        try {
-            const loanApplications = await LoanApplication.find().populate('applicant documents');
-            res.json(loanApplications);
-        } catch (error) {
-            next({ status: 500, message: 'Internal Server Error', error });
-        }
-    },
-
-    async getLoanApplicationById(req, res, next) {
-        try {
-            const loanApplication = await LoanApplication.findById(req.params.id).populate('applicant documents');
-            if (!loanApplication) {
-                return next({ status: 404, message: 'Loan application not found' });
-            }
-            res.json(loanApplication);
-        } catch (error) {
-            next({ status: 500, message: 'Internal Server Error', error });
-        }
-    },
-
-    async updateLoanApplicationStatus(req, res, next) {
-        try {
-            const { status } = req.body;
-            const loanApplication = await LoanApplication.findById(req.params.id);
-            if (!loanApplication) {
-                return next({ status: 404, message: 'Loan application not found' });
-            }
-            loanApplication.status = status;
-            await loanApplication.save();
-            res.json(loanApplication);
-        } catch (error) {
-            if (error.name === 'ValidationError') {
-                next({ status: 400, message: 'Validation Error', error });
-            } else {
-                next({ status: 500, message: 'Internal Server Error', error });
-            }
-        }
-    },
-
-    async deleteLoanApplication(req, res, next) {
-        try {
-            const loanApplication = await LoanApplication.findByIdAndDelete(req.params.id);
-            if (!loanApplication) {
-                return next({ status: 404, message: 'Loan application not found' });
-            }
-            res.json(loanApplication);
-        } catch (error) {
-            next({ status: 500, message: 'Internal Server Error', error });
-        }
+// Create a new loan application
+exports.createLoanApplication = async (req, res) => {
+    try {
+        const loanApplication = new LoanApplication(req.body);
+        await loanApplication.save();
+        res.status(201).json(loanApplication);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 };
 
-module.exports = loanApplicationController;
+// Retrieve all loan applications
+exports.getAllLoanApplications = async (req, res) => {
+    try {
+        const applications = await LoanApplication.find();
+        res.json(applications);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Retrieve a loan application by ID
+exports.getLoanApplicationById = async (req, res) => {
+    try {
+        const application = await LoanApplication.findById(req.params.id);
+        if (!application) return res.status(404).json({ message: 'Loan application not found' });
+        res.json(application);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Update a loan application by ID
+exports.updateLoanApplication = async (req, res) => {
+    try {
+        const application = await LoanApplication.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!application) return res.status(404).json({ message: 'Loan application not found' });
+        res.json(application);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// Delete a loan application by ID
+exports.deleteLoanApplication = async (req, res) => {
+    try {
+        const application = await LoanApplication.findByIdAndDelete(req.params.id);
+        if (!application) return res.status(404).json({ message: 'Loan application not found' });
+        res.json({ message: 'Loan application deleted' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Approve or reject a loan application
+exports.approveOrRejectLoan = async (req, res) => {
+    try {
+        const { status } = req.body; // Accepts 'approved' or 'rejected'
+        const loanId = req.params.id;
+
+        if (!['approved', 'rejected'].includes(status)) {
+            return res.status(400).json({ message: 'Invalid status' });
+        }
+
+        // Get the loan application details
+        const application = await LoanApplication.findById(loanId);
+        if (!application) return res.status(404).json({ message: 'Loan application not found' });
+
+        // Check credit score before approval
+        if (status === 'approved') {
+            const creditScore = await CreditScore.findOne({ userId: application.farmerId });
+            if (!creditScore || creditScore.score < 600) {
+                return res.status(400).json({ message: 'Loan application denied due to low credit score.' });
+            }
+        }
+
+        // Update loan application status
+        application.status = status;
+        await application.save();
+
+        res.json(application);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};

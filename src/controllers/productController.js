@@ -23,7 +23,7 @@ const productController = {
         }
     },
 
-  
+
     async createProduct(req, res, next) {
         try {
             const { productName, category, details, images, location, availabilityStatus, supplier } = req.body;
@@ -77,7 +77,7 @@ const productController = {
         }
     },
 
-   
+
     async deleteProduct(req, res, next) {
         try {
             const product = await ProductCatalog.findByIdAndDelete(req.params.id);

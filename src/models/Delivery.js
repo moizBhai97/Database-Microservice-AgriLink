@@ -10,8 +10,17 @@ const LocationSchema = new Schema({
 
 const LogisticsRequestSchema = new Schema({
     requester: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-    equipment: { type: Schema.Types.ObjectId, ref: 'Equipment', index: true },
-    product: { type: Schema.Types.ObjectId, ref: 'Product', index: true },
+    itemType: {
+        type: String,
+        required: true,
+        enum: ['Equipment', 'Product']
+    },
+    item: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        refPath: 'itemType',
+        index: true
+    },
     pickupLocation: LocationSchema,
     deliveryLocation: LocationSchema,
     scheduledPickupDate: { type: Date, required: true },

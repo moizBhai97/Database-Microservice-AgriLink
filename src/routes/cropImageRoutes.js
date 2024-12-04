@@ -12,4 +12,16 @@ router.route('/:id')
     .put(cropImageController.updateImage)
     .delete(cropImageController.deleteImage);
 
+router.route('/:id/label')
+    .post(cropImageController.addLabel);
+
+router.route('/:id/label/upvote')
+    .post(cropImageController.upvoteLabel);
+
+router.route('/:id/label/downvote')
+    .post(cropImageController.downvoteLabel);
+
+router.route('/:id/label/drop')
+    .post(cropImageController.dropLabel);
+
 module.exports = router;

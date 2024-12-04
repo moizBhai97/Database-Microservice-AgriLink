@@ -6,11 +6,11 @@ const WeatherConditionsSchema = new mongoose.Schema({
 });
 
 const UsageRecordSchema = new mongoose.Schema({
-    resource: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'ProductCatalog' },
-    amountUsed: { type: Number, required: true },
+    resource: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'ProductCatalog', index: true },
+    amountUsed: { type: Number, required: true, min: 0 },
     dateOfUsage: { type: Date, default: Date.now },
     purpose: { type: String },
-    complianceChecked: { type: Boolean },
+    complianceChecked: { type: Boolean, default: false },
     weatherConditions: WeatherConditionsSchema,
     notes: { type: String },
 }, {

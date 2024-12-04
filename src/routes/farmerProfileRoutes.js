@@ -12,4 +12,7 @@ router.route('/:id')
     .put(farmerProfileController.updateProfile)
     .delete(farmerProfileController.deleteProfile);
 
+router.route('/:id/contribution')
+    .put(farmerProfileController.updateContributionStats);
+
 module.exports = router;

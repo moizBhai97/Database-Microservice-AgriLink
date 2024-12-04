@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const ContactInfoSchema = new mongoose.Schema({
-    email: { type: String, required: true },
+    email: { type: String, required: true, index: true },
     phone: { type: String, required: true },
 });
 
@@ -23,7 +23,6 @@ const PreferencesSchema = new mongoose.Schema({
 });
 
 const UserSchema = new mongoose.Schema({
-    userId: { type: String, required: true, unique: true },
     username: { type: String, minlength: 3, maxlength: 30, required: true },
     password: { type: String, required: true }, // Hashed password
     roles: {

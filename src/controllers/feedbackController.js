@@ -4,7 +4,7 @@ const feedbackController = {
     // Get all feedback
     async getAllFeedback(req, res, next) {
         try {
-            const feedback = await Feedback.find().populate('user product');
+            const feedback = await Feedback.find().populate('user');
             //const feedback = await Feedback.find();
             res.json(feedback);
         } catch (error) {
@@ -15,8 +15,8 @@ const feedbackController = {
     // Get a specific feedback by ID
     async getFeedbackById(req, res, next) {
         try {
-            const feedback = await Feedback.findById(req.params.id).populate('user product');
-             //const feedback = await Feedback.findById(req.params.id);
+            const feedback = await Feedback.findById(req.params.id).populate('user');
+            //const feedback = await Feedback.findById(req.params.id);
             if (!feedback) {
                 return next({ status: 404, message: 'Feedback not found' });
             }
@@ -29,8 +29,8 @@ const feedbackController = {
     // Create new feedback
     async createFeedback(req, res, next) {
         try {
-            const { content, user, product } = req.body;
-            const feedback = new Feedback({ content, user, product });
+            const { content, user, category } = req.body;
+            const feedback = new Feedback({ content, user, category });
             await feedback.save();
             res.status(201).json(feedback);
         } catch (error) {
@@ -45,12 +45,12 @@ const feedbackController = {
     // Update feedback by ID
     async updateFeedback(req, res, next) {
         try {
-            const { content, user, product } = req.body;
+            const { content, user, category } = req.body;
             const feedback = await Feedback.findByIdAndUpdate(
                 req.params.id,
-                { content, user, product },
+                { content, user, category },
                 { new: true, runValidators: true }
-            ).populate('user product');
+            ).populate('user');
             // const { content, user, product } = req.body;
             // const feedback = await Feedback.findByIdAndUpdate(
             //     req.params.id,

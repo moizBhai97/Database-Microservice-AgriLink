@@ -34,8 +34,8 @@ const priceListController = {
                 city,
                 province,
                 priceDetails: {
-                    minimumPrice, 
-                    maximumPrice, 
+                    minimumPrice,
+                    maximumPrice,
                     description
                 }
             });
@@ -49,7 +49,7 @@ const priceListController = {
             }
         }
     },
-    
+
 
     // Update a price list
     async updatePriceList(req, res, next) {
