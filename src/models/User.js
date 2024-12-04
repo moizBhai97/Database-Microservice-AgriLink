@@ -1,4 +1,39 @@
 const mongoose = require('mongoose');
+const { Schema, model } = mongoose;
+
+// Permission Schema
+const permissionSchema = new Schema({
+    name: {
+        type: String,
+        required: true,
+        unique: true, // Ensure no duplicate permissions
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+});
+
+const Permission = model('Permission', permissionSchema);
+
+// Role Schema
+const roleSchema = new Schema({
+    name: {
+        type: String,
+        required: true,
+        unique: true,
+        enum: ['Farmer', 'Supplier', 'Buyer', 'Admin', 'GovernmentOfficial'], // Defined roles
+    },
+    permissions: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Permission', // Reference to Permission schema
+        },
+    ],
+});
+
+const Role = model('Role', roleSchema);
+
 
 const ContactInfoSchema = new mongoose.Schema({
     email: { type: String, required: true, index: true },
@@ -25,9 +60,9 @@ const PreferencesSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema({
     username: { type: String, minlength: 3, maxlength: 30, required: true },
     password: { type: String, required: true }, // Hashed password
-    roles: {
-        type: [String],
-        enum: ['Farmer', 'Supplier', 'Buyer', 'Admin', 'GovernmentOfficial'],
+    role: {
+        type: Schema.Types.ObjectId,
+        ref: 'Role', // Reference to Role schema
         required: true,
     },
     status: { type: String, enum: ['active', 'inactive'], default: 'active' },
@@ -37,4 +72,6 @@ const UserSchema = new mongoose.Schema({
     preferences: { type: PreferencesSchema },
 }, { timestamps: true });
 
-module.exports = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSchema);
+
+module.exports = { User, Role, Permission };
