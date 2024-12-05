@@ -34,6 +34,16 @@ const cropImageController = {
             if (!profile) {
                 return next({ status: 404, message: 'Profile not found' });
             }
+
+            // Initialize contributionStats if not exists
+            if (!profile.contributionStats) {
+                profile.contributionStats = {
+                    numContributed: 0,
+                    numLabeled: 0,
+                    numValidated: 0
+                };
+            }
+
             profile.contributionStats.numContributed += 1;
             await profile.save();
 
