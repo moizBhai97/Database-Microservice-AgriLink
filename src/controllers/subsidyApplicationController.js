@@ -4,7 +4,7 @@ const Subsidy = require('../models/Subsidy');
 
 const subsidyApplicationController = {
 
-    // Get all subsidy applications
+  // Get all subsidy applications
   async getAllApplications(req, res, next) {
     try {
       const applications = await SubsidyApplication.find()
@@ -16,11 +16,11 @@ const subsidyApplicationController = {
           path: "farmer",
           populate: {
             path: "user",
-            select: "username", 
+            select: "username",
           },
         });
-        console.log ('www')
-        res.json (applications)
+      console.log('www')
+      res.json(applications)
     } catch (error) {
       next({ status: 500, message: "Internal Server Error", error });
     }
@@ -30,17 +30,17 @@ const subsidyApplicationController = {
   async getApplicationById(req, res, next) {
     try {
       const application = await SubsidyApplication.findById(req.params.id)
-      .populate("farmer", "farmDetails creditScore bankDetails")
-      .populate("subsidy", "title category region amount description")
-      .populate("supportingDocuments", "fileUrl fileType metadata")
-      .populate({
-        path: "farmer",
-        populate: {
-          path: "user",
-          select: "username", // Only include username
-        },
-      });
-      
+        .populate("farmer", "farmDetails creditScore bankDetails")
+        .populate("subsidy", "title category region amount description")
+        .populate("supportingDocuments", "fileUrl fileType metadata")
+        .populate({
+          path: "farmer",
+          populate: {
+            path: "user",
+            select: "username", // Only include username
+          },
+        });
+
       if (!application) {
         return next({ status: 404, message: "Subsidy Application not found" });
       }
@@ -49,23 +49,24 @@ const subsidyApplicationController = {
       next({ status: 500, message: "Internal Server Error", error });
     }
   },
-// Create a new subsidy application
-async createApplication(req, res, next) {
+  
+  // Create a new subsidy application
+  async createApplication(req, res, next) {
     try {
       const { farmer, subsidy, status, supportingDocuments, rejectionReason } = req.body;
-  
+
       // Validate farmer existence
       const farmerExists = await FarmerProfile.findById(farmer);
       if (!farmerExists) {
         return next({ status: 404, message: "Farmer profile not found" });
       }
-  
+
       // Validate subsidy existence
       const subsidyExists = await Subsidy.findById(subsidy);
       if (!subsidyExists) {
         return next({ status: 404, message: "Subsidy not found" });
       }
-  
+
       // Create a new subsidy application
       const newApplication = new SubsidyApplication({
         farmer,
@@ -74,7 +75,7 @@ async createApplication(req, res, next) {
         supportingDocuments,
         rejectionReason: null, // Only include if status is 'Rejected'
       });
-  
+
       await newApplication.save();
       res.status(201).json(newApplication);
     } catch (error) {
@@ -82,42 +83,42 @@ async createApplication(req, res, next) {
     }
   },
 
-    // Update an existing subsidy application
-    async updateApplication(req, res, next) {
-        try {
-            const updates = req.body;
+  // Update an existing subsidy application
+  async updateApplication(req, res, next) {
+    try {
+      const updates = req.body;
 
-            const application = await SubsidyApplication.findByIdAndUpdate(
-                req.params.id,
-                updates,
-                { new: true, runValidators: true }
-            )
-                .populate('farmer', 'farmDetails creditScore bankDetails')
-                .populate('subsidy', 'name description eligibilityCriteria')
-                .populate('supportingDocuments', 'url type');
-            if (!application) {
-                return next({ status: 404, message: 'Subsidy Application not found' });
-            }
+      const application = await SubsidyApplication.findByIdAndUpdate(
+        req.params.id,
+        updates,
+        { new: true, runValidators: true }
+      )
+        .populate('farmer', 'farmDetails creditScore bankDetails')
+        .populate('subsidy', 'name description eligibilityCriteria')
+        .populate('supportingDocuments', 'url type');
+      if (!application) {
+        return next({ status: 404, message: 'Subsidy Application not found' });
+      }
 
-            res.json(application);
-        } catch (error) {
-            next({ status: 500, message: 'Internal Server Error', error });
-        }
-    },
+      res.json(application);
+    } catch (error) {
+      next({ status: 500, message: 'Internal Server Error', error });
+    }
+  },
 
-    // Delete a subsidy application
-    async deleteApplication(req, res, next) {
-        try {
-            const application = await SubsidyApplication.findByIdAndDelete(req.params.id);
-            if (!application) {
-                return next({ status: 404, message: 'Subsidy Application not found' });
-            }
+  // Delete a subsidy application
+  async deleteApplication(req, res, next) {
+    try {
+      const application = await SubsidyApplication.findByIdAndDelete(req.params.id);
+      if (!application) {
+        return next({ status: 404, message: 'Subsidy Application not found' });
+      }
 
-            res.json({ message: 'Subsidy Application deleted successfully', application });
-        } catch (error) {
-            next({ status: 500, message: 'Internal Server Error', error });
-        }
-    },
+      res.json({ message: 'Subsidy Application deleted successfully', application });
+    } catch (error) {
+      next({ status: 500, message: 'Internal Server Error', error });
+    }
+  },
 };
-  
+
 module.exports = subsidyApplicationController;
