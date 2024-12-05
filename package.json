@@ -1,5 +1,5 @@
 {
-  "name": "db",
+  "name": "agri_link_db",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -9,15 +9,17 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "agri_link_db": "file:",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
-    "db": "file:",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.8.1",
+    "mongodb": "^6.11.0",
+    "mongoose": "^8.8.3",
     "morgan": "^1.10.0",
+    "node-cron": "^3.0.3",
     "stripe": "^17.4.0",
     "uuid": "^11.0.3"
   }
