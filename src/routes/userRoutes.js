@@ -12,6 +12,9 @@ router.route('/:id')
     .put(userController.updateUser)
     .delete(userController.deleteUser);
 
+router.route('/:username')
+    .get(userController.getUserByUsername);
+
 router.route('/:id/preferences')
     .put(userController.updatePreferences);
 

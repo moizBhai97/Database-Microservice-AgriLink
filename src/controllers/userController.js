@@ -77,6 +77,19 @@ const userController = {
         }
     },
 
+    async getUserByUsername(req, res, next) {
+        try {
+            const user = await User.findOne({ username: req.params.username }).populate('role');
+            if (!user) {
+                return next({ status: 404, message: 'User not found' });
+            }
+            res.json(user);
+        }
+        catch (error) {
+            next({ status: 500, message: 'Internal Server Error', error });
+        }
+    },
+
     async createUser(req, res, next) {
         try {
             const { username, password, role, status, personalDetails, preferences } = req.body;
