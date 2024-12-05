@@ -11,6 +11,7 @@ const SubsidyApplicationSchema = new mongoose.Schema({
         default: 'pending',
     },
     supportingDocuments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Document' }],
+    rejectionReason: { type: String },
 }, { timestamps: true });
 
 module.exports = mongoose.model('SubsidyApplication', SubsidyApplicationSchema);
