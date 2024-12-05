@@ -1,83 +1,74 @@
 const LoanRepaymentMonitoring = require('../models/LoanRepaymentMonitoring');
-const LoanApplication = require('../models/LoanApplication');
 
-// Create a new loan repayment monitoring entry
-exports.createLoanRepayment = async (req, res) => {
-    try {
-        const repayment = new LoanRepaymentMonitoring(req.body);
-        await repayment.save();
-        res.status(201).json(repayment);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
-// Retrieve all loan repayments
-exports.getAllLoanRepayments = async (req, res) => {
-    try {
-        const repayments = await LoanRepaymentMonitoring.find();
-        res.json(repayments);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-// Retrieve a loan repayment by ID
-exports.getLoanRepaymentById = async (req, res) => {
-    try {
-        const repayment = await LoanRepaymentMonitoring.findById(req.params.id);
-        if (!repayment) return res.status(404).json({ message: 'Loan repayment not found' });
-        res.json(repayment);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-// Update a loan repayment by ID
-exports.updateLoanRepayment = async (req, res) => {
-    try {
-        // Find and update the repayment entry
-        const repayment = await LoanRepaymentMonitoring.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true }
-        );
-
-        if (!repayment) {
-            return res.status(404).json({ message: 'Loan repayment not found' });
+const loanRepaymentMonitoringController = {
+    async getAllLoanRepayments(req, res, next) {
+        try {
+            const loanRepayments = await LoanRepaymentMonitoring.find();
+            res.json(loanRepayments);
+        } catch (error) {
+            next({ status: 500, message: 'Internal Server Error', error });
         }
+    },
 
-        // Find the associated loan application
-        const loan = await LoanApplication.findById(repayment.loanId);
-        if (!loan) {
-            return res.status(404).json({ message: 'Associated loan application not found' });
+    async getLoanRepaymentById(req, res, next) {
+        try {
+            const loanRepayment = await LoanRepaymentMonitoring.findById(req.params.id);
+            if (!loanRepayment) {
+                return next({ status: 404, message: 'Loan Repayment not found' });
+            }
+            res.json(loanRepayment);
+        } catch (error) {
+            next({ status: 500, message: 'Internal Server Error', error });
         }
+    },
 
-        // Update the loan's remaining balance
-        loan.remainingBalance -= repayment.amountPaid;
-
-        // Check if the loan is fully repaid
-        if (loan.remainingBalance <= 0) {
-            loan.remainingBalance = 0; // Ensure it doesn't go negative
-            loan.status = 'completed'; // Mark loan as completed
+    async createLoanRepayment(req, res, next) {
+        try {
+            const { loan, repaymentDate, amountPaid, remainingBalance, status } = req.body;
+            const loanRepayment = new LoanRepaymentMonitoring({ loan, repaymentDate, amountPaid, remainingBalance, status });
+            await loanRepayment.save();
+            res.status(201).json(loanRepayment);
+        } catch (error) {
+            if (error.name === 'ValidationError') {
+                next({ status: 400, message: 'Validation Error', error });
+            } else {
+                next({ status: 500, message: 'Internal Server Error', error });
+            }
         }
+    },
 
-        // Save the updated loan application
-        await loan.save();
+    async updateLoanRepayment(req, res, next) {
+        try {
+            const { loan, repaymentDate, amountPaid, remainingBalance, status } = req.body;
+            const loanRepayment = await LoanRepaymentMonitoring.findByIdAndUpdate(
+                req.params.id,
+                { loan, repaymentDate, amountPaid, remainingBalance, status },
+                { new: true, runValidators: true }
+            );
+            if (!loanRepayment) {
+                return next({ status: 404, message: 'Loan Repayment not found' });
+            }
+            res.json(loanRepayment);
+        } catch (error) {
+            if (error.name === 'ValidationError') {
+                next({ status: 400, message: 'Validation Error', error });
+            } else {
+                next({ status: 500, message: 'Internal Server Error', error });
+            }
+        }
+    },
 
-        res.json({ repayment, loan });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
+    async deleteLoanRepayment(req, res, next) {
+        try {
+            const loanRepayment = await LoanRepaymentMonitoring.findByIdAndDelete(req.params.id);
+            if (!loanRepayment) {
+                return next({ status: 404, message: 'Loan Repayment not found' });
+            }
+            res.json(loanRepayment);
+        } catch (error) {
+            next({ status: 500, message: 'Internal Server Error', error });
+        }
     }
 };
 
-// Delete a loan repayment by ID
-exports.deleteLoanRepayment = async (req, res) => {
-    try {
-        const repayment = await LoanRepaymentMonitoring.findByIdAndDelete(req.params.id);
-        if (!repayment) return res.status(404).json({ message: 'Loan repayment not found' });
-        res.json({ message: 'Loan repayment deleted' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
+module.exports = loanRepaymentMonitoringController;

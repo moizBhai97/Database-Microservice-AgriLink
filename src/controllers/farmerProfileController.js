@@ -24,8 +24,8 @@ const farmerProfileController = {
 
     async createProfile(req, res, next) {
         try {
-            const { user, farmDetails, creditScore, bankDetails, thresholds } = req.body;
-            const profile = new FarmerProfile({ user, farmDetails, creditScore, bankDetails, thresholds });
+            const { user, farmDetails, bankDetails, thresholds } = req.body;
+            const profile = new FarmerProfile({ user, farmDetails, bankDetails, thresholds });
             await profile.save();
             res.status(201).json(profile);
         } catch (error) {
@@ -39,10 +39,10 @@ const farmerProfileController = {
 
     async updateProfile(req, res, next) {
         try {
-            const { user, farmDetails, creditScore, bankDetails, thresholds } = req.body;
+            const { user, farmDetails, bankDetails, thresholds } = req.body;
             const profile = await FarmerProfile.findByIdAndUpdate(
                 req.params.id,
-                { user, farmDetails, creditScore, bankDetails, thresholds },
+                { user, farmDetails, bankDetails, thresholds },
                 { new: true, runValidators: true }
             );
             if (!profile) {

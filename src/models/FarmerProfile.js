@@ -13,11 +13,6 @@ const FarmDetailsSchema = new mongoose.Schema({
     licenseCertifications: [String],
 });
 
-const CreditScoreSchema = new mongoose.Schema({
-    score: { type: Number, min: 300, max: 850 },
-    lastUpdated: { type: Date, default: Date.now },
-});
-
 const BankDetailsSchema = new mongoose.Schema({
     accountNumber: { type: String },
     bankName: { type: String },
@@ -55,7 +50,6 @@ const ThresholdsSchema = new mongoose.Schema({
 const FarmerProfileSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true, index: true },
     farmDetails: { type: FarmDetailsSchema, required: true },
-    creditScore: CreditScoreSchema,
     bankDetails: BankDetailsSchema,
     contributionStats: ContributionStatsSchema,
     thresholds: ThresholdsSchema, // Thresholds Schema (added)

@@ -1,12 +1,20 @@
 const CreditScore = require('../models/CreditScore');
-const { updateCreditScore } = require('../utils/creditScoreCalculator');
 
 const creditScoreController = {
-    async getCreditScore(req, res, next) {
+    async getAllCreditScores(req, res, next) {
         try {
-            const creditScore = await CreditScore.findOne({ userId: req.params.userId });
+            const creditScores = await CreditScore.find();
+            res.json(creditScores);
+        } catch (error) {
+            next({ status: 500, message: 'Internal Server Error', error });
+        }
+    },
+
+    async getCreditScoreById(req, res, next) {
+        try {
+            const creditScore = await CreditScore.findById(req.params.id);
             if (!creditScore) {
-                return next({ status: 404, message: 'Credit score not found.' });
+                return next({ status: 404, message: 'Credit Score not found' });
             }
             res.json(creditScore);
         } catch (error) {
@@ -14,19 +22,48 @@ const creditScoreController = {
         }
     },
 
-    async updateCreditScoreOnRepayment(req, res, next) {
-        const { userId } = req.params;
-        const { repaymentStatus, loanAmount } = req.body;
-
+    async createCreditScore(req, res, next) {
         try {
-            let creditScore = await CreditScore.findOne({ userId });
-
-            if (!creditScore) {
-                creditScore = new CreditScore({ userId });
-            }
-
-            creditScore = updateCreditScore(creditScore, repaymentStatus, loanAmount);
+            const { user, score, history } = req.body;
+            const creditScore = new CreditScore({ user, score, history });
             await creditScore.save();
+            res.status(201).json(creditScore);
+        } catch (error) {
+            if (error.name === 'ValidationError') {
+                next({ status: 400, message: 'Validation Error', error });
+            } else {
+                next({ status: 500, message: 'Internal Server Error', error });
+            }
+        }
+    },
+
+    async updateCreditScore(req, res, next) {
+        try {
+            const { user, score, history } = req.body;
+            const creditScore = await CreditScore.findByIdAndUpdate(
+                req.params.id,
+                { user, score, history },
+                { new: true, runValidators: true }
+            );
+            if (!creditScore) {
+                return next({ status: 404, message: 'Credit Score not found' });
+            }
+            res.json(creditScore);
+        } catch (error) {
+            if (error.name === 'ValidationError') {
+                next({ status: 400, message: 'Validation Error', error });
+            } else {
+                next({ status: 500, message: 'Internal Server Error', error });
+            }
+        }
+    },
+
+    async deleteCreditScore(req, res, next) {
+        try {
+            const creditScore = await CreditScore.findByIdAndDelete(req.params.id);
+            if (!creditScore) {
+                return next({ status: 404, message: 'Credit Score not found' });
+            }
             res.json(creditScore);
         } catch (error) {
             next({ status: 500, message: 'Internal Server Error', error });
