@@ -5,6 +5,7 @@ const subsidyController = {
     async getAllSubsidies(req, res, next) {
         try {
             const subsidies = await Subsidy.find().populate('createdBy');
+            console.log(subsidies);
             res.json(subsidies);
         } catch (error) {
             next({ status: 500, message: 'Internal Server Error', error });
