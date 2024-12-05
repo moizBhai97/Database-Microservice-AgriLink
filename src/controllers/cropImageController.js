@@ -1,6 +1,6 @@
 const CropImage = require('../models/CropImage');
 const FarmerProfile = require('../models/FarmerProfile');
-const farmerProfileController = require('./farmerProfileController');
+const mongoose = require('mongoose');
 
 const cropImageController = {
     async getAllImages(req, res, next) {
