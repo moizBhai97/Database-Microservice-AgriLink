@@ -25,32 +25,25 @@ const cropImageController = {
     },
 
     async createImage(req, res, next) {
-        const session = await mongoose.startSession();
-        session.startTransaction();
-
         try {
             const { imageUrl, cropName, uploadedBy, labels = [] } = req.body;
             const image = new CropImage({ imageUrl, cropName, uploadedBy, labels });
-            await image.save({ session });
+            await image.save();
 
-            const profile = await FarmerProfile.findById(uploadedBy).session(session);
+            const profile = await FarmerProfile.findById(uploadedBy);
             if (!profile) {
-                throw new Error('Profile not found');
+                return next({ status: 404, message: 'Profile not found' });
             }
             profile.contributionStats.numContributed += 1;
-            await profile.save({ session });
+            await profile.save();
 
-            await session.commitTransaction();
             res.status(201).json(image);
         } catch (error) {
-            await session.abortTransaction();
             if (error.name === 'ValidationError') {
                 next({ status: 400, message: 'Validation Error', error });
             } else {
                 next({ status: 500, message: 'Internal Server Error', error });
             }
-        } finally {
-            session.endSession();
         }
     },
 
@@ -92,127 +85,106 @@ const cropImageController = {
     },
 
     async addLabel(req, res, next) {
-        const session = await mongoose.startSession();
-        session.startTransaction();
-
         try {
             const { label, labeledBy } = req.body;
-            const image = await CropImage.findById(req.params.id).session(session);
+            const image = await CropImage.findById(req.params.id);
             if (!image) {
-                throw new Error('Image not found');
+                return next({ status: 404, message: 'Image not found' });
             }
 
             image.labels.push({ label, labeledBy });
             image.status = 'labeled';
-            await image.save({ session });
+            await image.save();
 
-            const profile = await FarmerProfile.findById(labeledBy).session(session);
+            const profile = await FarmerProfile.findById(labeledBy);
             if (!profile) {
-                throw new Error('Profile not found');
+                return next({ status: 404, message: 'Profile not found' });
             }
             profile.contributionStats.numLabeled += 1;
-            await profile.save({ session });
+            await profile.save();
 
-            await session.commitTransaction();
             res.status(201).json(image);
         } catch (error) {
-            await session.abortTransaction();
             if (error.name === 'ValidationError') {
                 next({ status: 400, message: 'Validation Error', error });
             } else {
                 next({ status: 500, message: 'Internal Server Error', error });
             }
-        } finally {
-            session.endSession();
         }
     },
 
 
     async upvoteLabel(req, res, next) {
-        const session = await mongoose.startSession();
-        session.startTransaction();
-
         try {
             const { labelId, userId } = req.body;
-            const image = await CropImage.findById(req.params.id).session(session);
+            const image = await CropImage.findById(req.params.id);
             if (!image) {
-                throw new Error('Image not found');
+                return next({ status: 404, message: 'Image not found' });
             }
 
             const label = image.labels.id(labelId);
             if (!label) {
-                throw new Error('Label not found');
+                return next({ status: 404, message: 'Label not found' });
             }
 
             if (!label.upvotes.includes(userId) && !label.downvotes.includes(userId)) {
                 label.upvotes.push(userId);
             } else {
-                throw new Error('User has already voted');
+                return next({ status: 400, message: 'User has already voted' });
             }
-            await image.save({ session });
+            await image.save();
 
-            const profile = await FarmerProfile.findById(label.labeledBy).session(session);
+            const profile = await FarmerProfile.findById(label.labeledBy);
             if (!profile) {
-                throw new Error('Profile not found');
+                return next({ status: 404, message: 'Profile not found' });
             }
             profile.contributionStats.numValidated += 1;
-            await profile.save({ session });
+            await profile.save();
 
-            await session.commitTransaction();
             res.json(image);
         } catch (error) {
-            await session.abortTransaction();
             if (error.name === 'ValidationError') {
                 next({ status: 400, message: 'Validation Error', error });
             } else {
                 next({ status: 500, message: 'Internal Server Error', error });
             }
-        } finally {
-            session.endSession();
         }
     },
 
     async downvoteLabel(req, res, next) {
-        const session = await mongoose.startSession();
-        session.startTransaction();
-
         try {
             const { labelId, userId } = req.body;
-            const image = await CropImage.findById(req.params.id).session(session);
+            const image = await CropImage.findById(req.params.id);
             if (!image) {
-                throw new Error('Image not found');
+                return next({ status: 404, message: 'Image not found' });
             }
 
             const label = image.labels.id(labelId);
             if (!label) {
-                throw new Error('Label not found');
+                return next({ status: 404, message: 'Label not found' });
             }
 
             if (!label.downvotes.includes(userId) && !label.upvotes.includes(userId)) {
                 label.downvotes.push(userId);
             } else {
-                throw new Error('User has already voted');
+                return next({ status: 400, message: 'User has already voted' });
             }
-            await image.save({ session });
+            await image.save();
 
-            const profile = await FarmerProfile.findById(label.labeledBy).session(session);
+            const profile = await FarmerProfile.findById(label.labeledBy);
             if (!profile) {
-                throw new Error('Profile not found');
+                return next({ status: 404, message: 'Profile not found' });
             }
             profile.contributionStats.numValidated += 1;
-            await profile.save({ session });
+            await profile.save();
 
-            await session.commitTransaction();
             res.json(image);
         } catch (error) {
-            await session.abortTransaction();
             if (error.name === 'ValidationError') {
                 next({ status: 400, message: 'Validation Error', error });
             } else {
                 next({ status: 500, message: 'Internal Server Error', error });
             }
-        } finally {
-            session.endSession();
         }
     },
 
