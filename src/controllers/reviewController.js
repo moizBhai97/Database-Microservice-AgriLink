@@ -4,7 +4,7 @@ const reviewController = {
     // Get all reviews
     async getAllReviews(req, res, next) {
         try {
-            const reviews = await Review.find().populate('user reviewFor');
+            const reviews = await Review.find();
             res.json(reviews);
         } catch (error) {
             next({ status: 500, message: 'Internal Server Error', error });
@@ -14,7 +14,7 @@ const reviewController = {
     // Get a specific review by ID
     async getReviewById(req, res, next) {
         try {
-            const review = await Review.findById(req.params.id).populate('user reviewFor');
+            const review = await Review.findById(req.params.id);
             if (!review) {
                 return next({ status: 404, message: 'Review not found' });
             }
@@ -48,7 +48,7 @@ const reviewController = {
                 req.params.id,
                 { reviewType, reviewFor, user, rating, comment },
                 { new: true, runValidators: true }
-            ).populate('user reviewFor');
+            );
             if (!review) {
                 return next({ status: 404, message: 'Review not found' });
             }

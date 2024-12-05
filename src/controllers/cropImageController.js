@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const cropImageController = {
     async getAllImages(req, res, next) {
         try {
-            const images = await CropImage.find().populate('uploadedBy labels.labeledBy labels.upvotes labels.downvotes');
+            const images = await CropImage.find();
             res.json(images);
         } catch (error) {
             next({ status: 500, message: 'Internal Server Error', error });
@@ -14,7 +14,7 @@ const cropImageController = {
 
     async getImageById(req, res, next) {
         try {
-            const image = await CropImage.findById(req.params.id).populate('uploadedBy labels.labeledBy labels.upvotes labels.downvotes');
+            const image = await CropImage.findById(req.params.id);
             if (!image) {
                 return next({ status: 404, message: 'Image not found' });
             }
@@ -58,7 +58,7 @@ const cropImageController = {
                 req.params.id,
                 updateFields,
                 { new: true, runValidators: true }
-            ).populate('uploadedBy labels.labeledBy labels.upvotes labels.downvotes');
+            );
             if (!image) {
                 return next({ status: 404, message: 'Image not found' });
             }

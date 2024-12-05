@@ -4,7 +4,7 @@ const subsidyController = {
     // Get all subsidies
     async getAllSubsidies(req, res, next) {
         try {
-            const subsidies = await Subsidy.find().populate('createdBy');
+            const subsidies = await Subsidy.find();
             console.log(subsidies);
             res.json(subsidies);
         } catch (error) {
@@ -15,7 +15,7 @@ const subsidyController = {
     // Get a specific subsidy by ID
     async getSubsidyById(req, res, next) {
         try {
-            const subsidy = await Subsidy.findById(req.params.id).populate('createdBy');
+            const subsidy = await Subsidy.findById(req.params.id);
             if (!subsidy) {
                 return next({ status: 404, message: 'Subsidy not found' });
             }
@@ -49,7 +49,7 @@ const subsidyController = {
                 req.params.id,
                 { title, category, region, description, applicationDeadline, amount, createdBy },
                 { new: true, runValidators: true }
-            ).populate('createdBy');
+            );
             if (!subsidy) {
                 return next({ status: 404, message: 'Subsidy not found' });
             }

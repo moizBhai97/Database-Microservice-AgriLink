@@ -51,7 +51,7 @@ const bookingController = {
 
             // Fetch bookings based on the constructed query
             const bookings = await Booking.find(query)
-                .populate('equipment renter owner');
+                .populate('renter owner');
 
             res.json(bookings);
         } catch (error) {
@@ -63,7 +63,7 @@ const bookingController = {
     async getBookingById(req, res, next) {
         try {
             const booking = await Booking.findById(req.params.id)
-                .populate('equipment renter owner');
+                .populate('renter owner');
 
             if (!booking) {
                 return next({ status: 404, message: 'Booking not found' });

@@ -3,7 +3,7 @@ const LogisticsRequest = require('../models/Delivery');
 const logisticsRequestController = {
     async getAllRequests(req, res, next) {
         try {
-            const requests = await LogisticsRequest.find().populate('requester item');
+            const requests = await LogisticsRequest.find();
             res.json(requests);
         } catch (error) {
             next({ status: 500, message: 'Internal Server Error', error });
@@ -12,7 +12,7 @@ const logisticsRequestController = {
 
     async getRequestById(req, res, next) {
         try {
-            const request = await LogisticsRequest.findById(req.params.id).populate('requester item');
+            const request = await LogisticsRequest.findById(req.params.id);
             if (!request) {
                 return next({ status: 404, message: 'Request not found' });
             }
@@ -44,7 +44,7 @@ const logisticsRequestController = {
                 req.params.id,
                 { requester, itemType, item, pickupLocation, deliveryLocation, scheduledPickupDate, scheduledDeliveryDate, status },
                 { new: true, runValidators: true }
-            ).populate('requester item');
+            );
             if (!request) {
                 return next({ status: 404, message: 'Request not found' });
             }

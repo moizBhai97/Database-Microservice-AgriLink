@@ -4,7 +4,7 @@ const productController = {
 
     async getAllProducts(req, res, next) {
         try {
-            const products = await ProductCatalog.find().populate('supplier');
+            const products = await ProductCatalog.find();
             res.json(products);
         } catch (error) {
             next({ status: 500, message: 'Internal Server Error', error });
@@ -13,7 +13,7 @@ const productController = {
 
     async getProductById(req, res, next) {
         try {
-            const product = await ProductCatalog.findById(req.params.id).populate('supplier');
+            const product = await ProductCatalog.findById(req.params.id);
             if (!product) {
                 return next({ status: 404, message: 'Product not found' });
             }
