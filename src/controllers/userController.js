@@ -85,14 +85,14 @@ const userController = {
                 return res.status(400).json({ message: 'Username already exists' });
             }
             const hashedPassword = await bcrypt.hash(password, 10);
-            const userRole = await Role.findById(role);
+            const userRole = await Role.findOne({ name: role });
             if (!userRole) {
                 return res.status(400).json({ message: 'Invalid role' });
             }
             const newUser = new User({
                 username,
                 password: hashedPassword,
-                role,
+                role: userRole._id,
                 status,
                 personalDetails,
                 preferences,
