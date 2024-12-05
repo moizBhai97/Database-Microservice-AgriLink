@@ -14,7 +14,10 @@ const creditScoreController = {
         }
     },
 
-    async updateCreditScoreOnRepayment(userId, repaymentStatus, loanAmount) {
+    async updateCreditScoreOnRepayment(req, res, next) {
+        const { userId } = req.params;
+        const { repaymentStatus, loanAmount } = req.body;
+
         try {
             let creditScore = await CreditScore.findOne({ userId });
 
@@ -24,10 +27,9 @@ const creditScoreController = {
 
             creditScore = updateCreditScore(creditScore, repaymentStatus, loanAmount);
             await creditScore.save();
-            return creditScore;
+            res.json(creditScore);
         } catch (error) {
-            console.error('Error updating credit score:', error.message);
-            throw error;
+            next({ status: 500, message: 'Internal Server Error', error });
         }
     }
 };
