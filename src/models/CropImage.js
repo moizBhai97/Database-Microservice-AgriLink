@@ -11,6 +11,7 @@ const LabelSchema = new mongoose.Schema({
 
 const CropImageSchema = new mongoose.Schema({
     imageUrl: { type: String, required: true },
+    cropName: { type: String },
     uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'FarmerProfile', required: true, index: true },
     status: { type: String, enum: ['unlabeled', 'labeled', 'validated'], default: 'unlabeled' },
     labels: { type: [LabelSchema], default: [] },

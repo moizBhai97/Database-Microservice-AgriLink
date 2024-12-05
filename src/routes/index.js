@@ -29,6 +29,9 @@ const paymentRoutes = require('./paymentRoutes');
 const subsidyApplicationRoutes = require('./subsidyApplicationRoutes');
 const usageRecordRoutes = require('./usageRecordRoutes');
 const governmentOfficialRoutes = require('./governmentOfficialRoutes');
+const hourlyWeatherRoutes = require('./hourlyWeatherRoutes');
+const weatherForecastRoutes = require('./weatherForecastRoutes');
+const weatherHistoryRoutes = require('./weatherHistoryRoutes');
 
 const router = express.Router();
 
@@ -67,6 +70,9 @@ router.use('/payments', paymentRoutes);
 router.use('/subsidyApplications', subsidyApplicationRoutes);
 router.use('/usageRecords', usageRecordRoutes);
 router.use('/governmentOfficials', governmentOfficialRoutes);
+router.use('/hourlyWeather', hourlyWeatherRoutes);
+router.use('/weatherForecasts', weatherForecastRoutes);
+router.use('/weatherHistories', weatherHistoryRoutes);
 
 router.use((req, res, next) => {
     const error = new Error('Not Found');
