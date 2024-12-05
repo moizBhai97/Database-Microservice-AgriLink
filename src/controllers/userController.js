@@ -79,13 +79,20 @@ const userController = {
 
     async getUserByUsername(req, res, next) {
         try {
-            const user = await User.findOne({ username: req.params.username }).populate('role');
+            const { username, password } = req.body;
+            
+            const user = await User.findOne({ username });
             if (!user) {
-                return next({ status: 404, message: 'User not found' });
+                return res.status(404).json({ message: 'User not found' });
             }
+
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
+                return res.status(401).json({ message: 'Invalid credentials' });
+            }
+
             res.json(user);
-        }
-        catch (error) {
+        } catch (error) {
             next({ status: 500, message: 'Internal Server Error', error });
         }
     },
