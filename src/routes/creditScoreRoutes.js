@@ -3,6 +3,7 @@ const creditScoreController = require('../controllers/creditScoreController');
 const router = express.Router();
 
 router.route('/:userId')
-    .get(creditScoreController.getCreditScore);
+    .get(creditScoreController.getCreditScore)
+    .put(creditScoreController.updateCreditScoreOnRepayment);
 
 module.exports = router;
