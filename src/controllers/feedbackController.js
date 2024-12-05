@@ -29,8 +29,8 @@ const feedbackController = {
     // Create new feedback
     async createFeedback(req, res, next) {
         try {
-            const { content, user, category } = req.body;
-            const feedback = new Feedback({ content, user, category });
+            const { content, user, category, status } = req.body;
+            const feedback = new Feedback({ content, user, category, status });
             await feedback.save();
             res.status(201).json(feedback);
         } catch (error) {
@@ -45,10 +45,10 @@ const feedbackController = {
     // Update feedback by ID
     async updateFeedback(req, res, next) {
         try {
-            const { content, user, category } = req.body;
+            const { content, user, category, status } = req.body;
             const feedback = await Feedback.findByIdAndUpdate(
                 req.params.id,
-                { content, user, category },
+                { content, user, category, status },
                 { new: true, runValidators: true }
             ).populate('user');
             // const { content, user, product } = req.body;
@@ -82,6 +82,29 @@ const feedbackController = {
             next({ status: 500, message: 'Internal Server Error', error });
         }
     },
+
+    async updateFeedbackStatus(req, res, next) {
+        try {
+            const { status } = req.body;
+            const feedback = await Feedback.findByIdAndUpdate(
+                req.params.id,
+                { status },
+                { new: true, runValidators: true }
+            ).populate('user');
+
+            if (!feedback) {
+                return next({ status: 404, message: 'Feedback not found' });
+            }
+
+            res.json(feedback);
+        } catch (error) {
+            if (error.name === 'ValidationError') {
+                next({ status: 400, message: 'Validation Error', error });
+            } else {
+                next({ status: 500, message: 'Internal Server Error', error });
+            }
+        }
+    }
 };
 
 module.exports = feedbackController;

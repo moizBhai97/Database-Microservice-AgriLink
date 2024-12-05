@@ -19,4 +19,6 @@ router.route('/:id/messages/:messageId')
     .put(chatController.updateMessage)
     .delete(chatController.deleteMessage);
 
+router.patch('/:id/mark-messages-read', chatController.markOtherUsersMessagesAsRead);
+
 module.exports = router;

@@ -12,4 +12,7 @@ router.route('/:id')
     .put(feedbackController.updateFeedback)
     .delete(feedbackController.deleteFeedback);
 
+// Add new route for updating feedback status
+router.patch('/:id/status', feedbackController.updateFeedbackStatus);
+
 module.exports = router;

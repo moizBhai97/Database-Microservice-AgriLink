@@ -129,6 +129,33 @@ const chatController = {
         } catch (error) {
             next({ status: 500, message: 'Internal Server Error', error });
         }
+    },
+
+    async markOtherUsersMessagesAsRead(req, res, next) {
+        try {
+            const { senderId } = req.body;
+            const chatId = req.params.id;
+
+            // Find chat
+            const chat = await Chat.findById(chatId);
+            if (!chat) {
+                return next({ status: 404, message: 'Chat not found' });
+            }
+
+            // Update isRead status for other users' messages
+            chat.messages.forEach(message => {
+                if (message.sender.toString() !== senderId) {
+                    message.isRead = true;
+                }
+            });
+
+            // Save the updated chat
+            await chat.save();
+
+            res.json(chat);
+        } catch (error) {
+            next({ status: 500, message: 'Internal Server Error', error });
+        }
     }
 };
 
