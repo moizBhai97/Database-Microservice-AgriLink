@@ -2,13 +2,7 @@ const { MongoClient } = require('mongodb');
 const { dbUrl, backupDbUrl } = require('../config');
 
 async function runBackup() {
-    try {
-        const backupMessage = await syncData();
-        console.log(backupMessage);
-    } catch (error) {
-        // console.error(error);
-        console.error('Failed to sync data from main to backup database');
-    }
+    await syncData();
 }
 
 async function syncData() {
@@ -32,7 +26,9 @@ async function syncData() {
             }
         }
 
-        return 'Data synced from main to backup database';
+        console.log('Data synced from main to backup database');
+    } catch (error) {
+        console.error('Failed to sync data from main to backup database');
     } finally {
         await backupClient.close();
         await mainClient.close();

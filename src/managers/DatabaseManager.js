@@ -10,35 +10,37 @@ class DatabaseManager {
 
     async connectToDatabase(url) {
         try {
+            // Close existing connection if any
+            if (mongoose.connection.readyState !== 0) {
+                await mongoose.connection.close();
+            }
+
             await mongoose.connect(url);
             this.currentDbUrl = url;
-            console.log(`Connected to database: ${url == this.mainDbUrl ? 'Main' : 'Backup'}`)
+            console.log(`Connected to database: ${url === this.mainDbUrl ? 'Main' : 'Backup'}`);
         } catch (error) {
-            console.error(`Failed to connect to database: ${url == this.mainDbUrl ? 'Main' : 'Backup'}`)
+            console.error(`Failed to connect to database: ${url === this.mainDbUrl ? 'Main' : 'Backup'}`);
             if (url === this.mainDbUrl) {
                 console.log('Attempting to connect to backup database...');
-                try {
-                    await this.connectToDatabase(this.backupDbUrl);
-                } catch (error) {
-                    console.error('Backup database is also down');
-                }
+                this.currentDbUrl = this.backupDbUrl;
+                await this.connectToDatabase(this.backupDbUrl);
             }
         }
     }
 
+    async isMainConnected() {
+        return mongoose.connection.readyState === 1 && this.currentDbUrl === this.mainDbUrl;
+    }
+
     async checkAndReconnect() {
-        try {
-            await mongoose.connect(this.mainDbUrl);
-            if (this.currentDbUrl === this.backupDbUrl) {
-                await this.syncDataFromBackupToMain();
-            }
+        if (await this.isMainConnected()) {
             console.log('Main database is up');
+        } else {
+            console.log('Main database is down. Attempting to reconnect...');
             this.currentDbUrl = this.mainDbUrl;
-        } catch (error) {
-            console.error('Main database is down');
-            if (this.currentDbUrl !== this.backupDbUrl) {
-                console.log('Switching to backup database...');
-                await this.connectToDatabase(this.backupDbUrl);
+            await this.connectToDatabase(this.mainDbUrl);
+            if (await this.isMainConnected()) {
+                await this.syncDataFromBackupToMain();
             }
         }
     }
@@ -65,6 +67,8 @@ class DatabaseManager {
             }
 
             console.log('Data synced from backup to main database');
+        } catch (error) {
+            console.error('Failed to sync data to main database');
         } finally {
             await backupClient.close();
             await mainClient.close();

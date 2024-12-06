@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { v4: uuidv4 } = require('uuid');
 
 const LoanRepaymentMonitoringSchema = new mongoose.Schema({
     loan: { type: mongoose.Schema.Types.ObjectId, ref: 'LoanApplication', required: true, index: true },
